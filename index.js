@@ -5,12 +5,41 @@
 
 //  Dependencies
 const http = require("http");
+const https = require("https");
 const url = require("url");
 const StringDecoder = require("string_decoder").StringDecoder;
-const config = require("./config");
+const config = require("./lib/config");
+const fs = require("fs");
+const handlers = require("./lib/handlers");
+const helpers = require("./lib/helpers");
 
-// The server should respond to all requests with a string
-const server = http.createServer((req, res) => {
+// Instantiating the HTTP server
+const httpServer = http.createServer((req, res) => {
+  unifiedServer(req, res);
+});
+
+// Start the HTTP server
+httpServer.listen(config.httpPort, () => {
+  console.log("The server is listening on port " + config.httpPort);
+});
+
+// Instantiating the HTTPS server
+const httpsServerOptions = {
+  key: fs.readFileSync("./https/key.pem"),
+  cert: fs.readFileSync("./https/cert.pem")
+};
+
+const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
+  unifiedServer(req, res);
+});
+
+// Start the HTTPS server
+httpsServer.listen(config.httpsPort, () => {
+  console.log("The server is listening on port " + config.httpsPort);
+});
+
+// All the server logic for both the http and https server
+const unifiedServer = (req, res) => {
   // Get the URL and parse it
   const parsedUrl = url.parse(req.url, true);
 
@@ -48,7 +77,7 @@ const server = http.createServer((req, res) => {
       queryStringObject: queryStringObject,
       method: method,
       headers: headers,
-      payload: buffer
+      payload: helpers.parseJsonToObject(buffer)
     };
 
     // Route the request to the handler specified in the router
@@ -71,39 +100,11 @@ const server = http.createServer((req, res) => {
       console.log("Returning this response: ", statusCode, payloadString);
     });
   });
-});
-
-// Start the server
-server.listen(config.port, () => {
-  console.log(
-    "The server is listening on port " +
-      config.port +
-      " in " +
-      config.envName +
-      " mode"
-  );
-});
-
-// Define the handlers
-let handlers = {};
-
-// Sample handler
-handlers.sample = (data, callback) => {
-  callback("name : ", data);
-};
-
-// Ping handler
-handlers.ping = (data, callback) => {
-  callback(200);
-};
-
-// Not found handler
-handlers.notFound = (data, callback) => {
-  callback(404);
 };
 
 // Define a request router
 const router = {
   ping: handlers.ping,
-  sample: handlers.sample
+  users: handlers.users,
+  tokens: handlers.tokens
 };
