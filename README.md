@@ -11,3 +11,4 @@ This application made no use of NPM, frameworks or dependencies.
 * Adding checks for users.
 * Sending SMS through Twilio API.
 * Refactoring codes.
+* Console log styling.
