@@ -436,10 +436,9 @@ app.loadChecksListPage = function(){
             };
             app.client.request(undefined,'api/checks','GET',newQueryStringObject,undefined,function(statusCode,responsePayload){
               if(statusCode == 200){
-                var checkData = responsePayload;
                 // Make the check data into a table row
                 var table = document.getElementById("checksListTable");
-                var tr = table.insertRow(-1);
+                var tr = table.insertRow(-1); // Insert a row at the end of the table
                 tr.classList.add('checkRow');
                 var td0 = tr.insertCell(0);
                 var td1 = tr.insertCell(1);
