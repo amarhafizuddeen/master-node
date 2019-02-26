@@ -12,3 +12,6 @@ This application made no use of NPM, frameworks or dependencies.
 * Sending SMS through Twilio API.
 * Refactoring codes.
 * Console log styling.
+* Serving web pages through NodeJS.
+* AJAX support.
+* Creating CLI support.
