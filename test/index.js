@@ -7,7 +7,7 @@
 process.env.NODE_ENV = "testing";
 
 // Application logic for the test runner
-_app = {};
+let _app = {};
 
 // Container for the tests
 _app.tests = {};
